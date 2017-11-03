@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export function nbuData(object) {
-    return { type: 'GET_CITIES', object}
+    return { type: 'GET_NBU_DATA', object}
 }
 
 export function getNbuData() {

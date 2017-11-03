@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import {connect} from 'react-redux'
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
+import {setDate} from "../actions/dateAction";
 
 class PickDate extends Component {
     constructor (props) {
@@ -19,6 +21,11 @@ class PickDate extends Component {
         this.setState({
             startDate: date
         });
+        setDate({
+            startDate: this.state.startDate.format("DD.MM.YYYY"),
+            endDate: this.state.startDate.format("DD.MM.YYYY"),
+        });
+
     }
 
     handleChangeEnd(date) {
@@ -26,11 +33,15 @@ class PickDate extends Component {
 
             endDate: date
         });
-
+        setDate({
+            startDate: this.state.startDate.format("DD.MM.YYYY"),
+            endDate: this.state.startDate.format("DD.MM.YYYY"),
+        });
     }
 
     render() {
-        console.log(moment());
+        console.log("Date - ",Date());
+        console.log("this - ",this.state.startDate.format("DD.MM.YYYY"));
         return (
             <div>
                 <DatePicker
@@ -54,5 +65,6 @@ class PickDate extends Component {
         )
     }
 }
+
 
 export default PickDate

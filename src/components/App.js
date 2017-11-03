@@ -1,8 +1,16 @@
 import React, { Component } from 'react';
+import {connect} from 'react-redux'
 import Chart from './Chart';
 import PickDate from './PickDate'
+import {getCurrency} from "../actions/currencyAction";
 
 class App extends Component {
+
+    componentDidMount() {
+        console.log("componentDidMount")
+        this.props.getCurrency();
+    }
+
   render() {
     return (
       <div className="App">
@@ -17,4 +25,21 @@ class App extends Component {
   }
 }
 
-export default App;
+function mapStateToProps(state) {
+console.log("State - ", state)
+    return {
+        currency: state.currency,
+
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getCurrency: () => {
+            dispatch(getCurrency());
+        }
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
+
