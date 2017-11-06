@@ -21,9 +21,9 @@ class PickDate extends Component {
         this.setState({
             startDate: date
         });
-        setDate({
-            startDate: this.state.startDate.format("DD.MM.YYYY"),
-            endDate: this.state.startDate.format("DD.MM.YYYY"),
+        this.props.setDate({
+            startDate: date.format("DD.MM.YYYY"),
+            endDate: this.state.endDate.format("DD.MM.YYYY"),
         });
 
     }
@@ -33,30 +33,30 @@ class PickDate extends Component {
 
             endDate: date
         });
-        setDate({
+        this.props.setDate({
             startDate: this.state.startDate.format("DD.MM.YYYY"),
-            endDate: this.state.startDate.format("DD.MM.YYYY"),
+            endDate: date.format("DD.MM.YYYY"),
         });
+
     }
 
     render() {
-        console.log("Date - ",Date());
-        console.log("this - ",this.state.startDate.format("DD.MM.YYYY"));
+
         return (
             <div>
-                <DatePicker
+                Start date<DatePicker
                     selected={this.state.startDate}
                     maxDate={moment()}
-                    dateFormat="DD/MM/YYYY"
+                    dateFormat="DD.MM.YYYY"
                     selectsStart
                     startDate={this.state.startDate}
                     endDate={this.state.endDate}
                     onChange={this.handleChangeStart}/>
 
-                <DatePicker
+                End date<DatePicker
                     selected = {this.state.endDate}
                     maxDate={moment()}
-                    dateFormat="DD/MM/YYYY"
+                    dateFormat="DD.MM.YYYY"
                     selectsEnd
                     startDate = {this.state.startDate}
                     endDate = {this.state.endDate}
@@ -66,5 +66,20 @@ class PickDate extends Component {
     }
 }
 
+function mapStateToProps(state) {
+    return {
+        date: state.date,
 
-export default PickDate
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setDate: (object) => {
+            dispatch(setDate(object));
+        }
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PickDate)
+

@@ -8,6 +8,7 @@ const defaultInit={
 export default function dateReducer(state = defaultInit, action) {
     switch (action.type) {
         case "SET_DATE":
+
             return {
                 ...state,
                 ...action.object
