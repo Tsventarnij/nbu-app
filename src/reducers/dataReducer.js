@@ -1,7 +1,4 @@
 const defaultInit=[]
-    // "USD": [],
-
-
 
 export default function dataReducer(state = defaultInit, action) {
     switch (action.type) {
@@ -10,25 +7,8 @@ export default function dataReducer(state = defaultInit, action) {
            return [
                    ...state,
                     ...action.object
-
            ]
-            // return {
-            //     ...state,
-            //     ...action.object
-            // }
-
         default:
             return state
     }
-
 }
-//
-// Object.assign({}, state, {
-//     todos: [
-//         ...state.todos,
-//         {
-//             text: action.text,
-//             completed: false
-//         }
-//     ]
-// })

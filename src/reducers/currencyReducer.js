@@ -1,18 +1,9 @@
-const defaultInit=[]
+ const defaultInit=[]
 
-export default function currencyReducer(state = [], action) {
+export default function currencyReducer(state =[], action) {
     switch (action.type) {
         case "GET_CURRENCY":
-            console.log("state", state, "action",action)
-            return [
-                ...state,
-                action.object
-
-        // {
-        //     value:action.object.cc,
-        //     label:action.object.text
-        // }
-            ]
+            return action.object;
 
         default:
             return state

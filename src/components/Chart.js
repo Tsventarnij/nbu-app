@@ -6,37 +6,31 @@ import {getNbuData} from '../actions/dataAction'
 
 class Chart extends Component {
 
-
     componentDidMount() {
         const arrDate = this.getArrayDate("YYYYMMDD");
-        //console.log("componentDidMount -> arrayDate",arrDate)
-        arrDate.forEach(date=>
-        {
+        arrDate.forEach(date=>{
             this.props.getNbuData("USD", date);
         })
-
     }
+
     componentDidUpdate(nextProps){
-        //console.log("shouldComponentUpdate","nextProps",nextProps.date, "Props", this.props.date)
-        if(nextProps.date!==this.props.date) {
+      if(nextProps.date!==this.props.date) {
+        const arrDate = this.getArrayDate("YYYYMMDD");
+        arrDate.forEach(date => {
+          this.props.selected.forEach(currenc=>{
+              let dateExist = false;
 
-                const arrDate = this.getArrayDate("YYYYMMDD");
-                // console.log("in IF",arrDate)
-                arrDate.forEach(date => {
-                    //console.log("in LUPP", date)
-                    let dateExist = false;
-                    this.props.data.forEach(item => {
-                        if (moment(date, "YYYYMMDD").format("DD.MM.YYYY") === item.exchangedate) {
-                            dateExist = true;
-                        }
-                    })
-                    if (!dateExist)
-                        this.props.getNbuData("USD", date);
-                })
-                //return false;
+              this.props.data.forEach(item => {
+                if (moment(date, "YYYYMMDD").format("DD.MM.YYYY") === item.exchangedate && currenc.label === item.cc) {
+                  dateExist = true;
+                }
+              })
+              if (!dateExist)
+                  this.props.getNbuData(currenc.label, date);
+            })
+          })
+
         }
-        //return true;
-
     }
 
     getArrayDate(format){
@@ -45,7 +39,6 @@ class Chart extends Component {
         let contDate=[startDate.format(format)];
         if(endDate.diff(startDate, "years")<2) {
             while (startDate.format("DD.MM.YYYY") !== endDate.format("DD.MM.YYYY")) {
-
                 contDate.push(startDate.add(1, 'day').format(format))
             }
         }else{
@@ -55,59 +48,47 @@ class Chart extends Component {
     }
 
     render() {
-
         // заполнение массива дат от начальной до конечной
         const arrDate = this.getArrayDate("DD.MM.YYYY");
         //массив данных по курсу
         let cursData=[];
-
         let propsData =this.props.data
-        console.log("this.props.data", propsData)
         let isData=false;
         let oldData=0;
-            arrDate.forEach(date => {
-                isData=false;
-                propsData.some(item => {
-                    if (date === item.exchangedate) {
-                        cursData.push(item.rate)
-                        oldData=item.rate;
-                        isData=true;
-                    }
-                    return date === item.exchangedate;
-                })
-                if(!isData){
-                    cursData.push(oldData)
-                }
-            })
+
+        //
+        // this.props.selected.forEach((currenc,index)=>{
+        //     isData=false;
+        //     this.props.selected[index].data=[];
+        //     arrDate.forEach(date => {
+        //
+        //         propsData.some(item => {
+        //           if (date === item.exchangedate&&currenc.label===item.cc) {
+        //             this.props.selected[index].data.push(item.rate)
+        //             // cursData.push(item.rate)
+        //             oldData=item.rate;
+        //             isData=true;
+        //             return true;
+        //           }
+        //           return false;
+        //         })
+        //         if(!isData){
+        //             // cursData.push(oldData)
+        //             this.props.selected[index].data.push(oldData)
+        //         }
+        //     })
+        //
+        // })
 
         //объденяем данные для прорисовки
+        //console.log("selected", this.props.selected)
         const data = {
             labels: arrDate, //this.props.label,
-            datasets: [
-                {
-                    label: 'USD',
-                    fill: true,
-                    lineTension: 0.1,
-                    backgroundColor: 'rgba(75,192,192,0.4)',
-                    borderColor: 'rgba(75,192,192,1)',
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    borderDashOffset: 0.0,
-                    borderJoinStyle: 'miter',
-                    pointBorderColor: 'rgba(75,192,192,1)',
-                    pointBackgroundColor: '#fff',
-                    pointBorderWidth: 1,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-                    pointHoverBorderColor: 'rgba(220,220,220,1)',
-                    pointHoverBorderWidth: 2,
-                    pointRadius: 1,
-                    pointHitRadius: 5,
-                    data: cursData//[25, 26]//this.props.data
-                }
-            ]
-        };
+            datasets: this.props.selected,
 
+        };
+        console.log("Chart")
+        console.log("1props", this.props, "state", this.state)
         return (
             <div>
                 <Line  data={data} />
@@ -117,11 +98,11 @@ class Chart extends Component {
 }
 
 function mapStateToProps(state) {
-    //console.log("State - ", state)
     return {
         date: state.date,
         currency: state.currency,
         data: state.data,
+        selected: state.selected
     };
 }
 
@@ -134,4 +115,3 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Chart)
-// export default Chart
