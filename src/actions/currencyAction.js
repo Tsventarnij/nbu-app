@@ -15,6 +15,17 @@ export function getCurrency() {
                     label: item.txt}
                 })
 
+                transData.sort(function (a, b) {
+                    if (a.label > b.label) {
+                        return 1;
+                    }
+                    if (a.label < b.label) {
+                        return -1;
+                    }
+                    // a должно быть равным b
+                    return 0;
+                });
+
                 dispatch(currency(transData, 'GET_CURRENCY'));
             })
             .catch(function (error) {

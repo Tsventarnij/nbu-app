@@ -10,7 +10,7 @@ export default function createReducer() {
     return combineReducers({
         date: dateReducer,
         currency: currencyReducer,
-        data: dataReducer,
+        //data: dataReducer,
         selected: selectCurrencReducer,
 
     });

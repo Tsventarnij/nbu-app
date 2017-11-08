@@ -7,6 +7,7 @@ import Select from 'react-select';
 import { Navbar, Grid, Row, Col, Button } from 'react-bootstrap';
 import 'react-select/dist/react-select.css';
 import moment from 'moment';
+import {getNbuData, fillNbuData} from '../actions/dataAction'
 
 class App extends Component {
 
@@ -14,9 +15,15 @@ class App extends Component {
         super(props)
         this.state = {
             value: ["USD"],
+            date: [],
+            selected: []
         };
         this.handleSelectChange = this.handleSelectChange.bind(this);
+        this.handleButtonClick = this.handleButtonClick.bind(this);
 
+    }
+    componentWillUpdate(nextProps){
+        this.props.fillNbuData(this.props.data, this.props.date);
     }
 
     componentDidMount() {
@@ -25,41 +32,33 @@ class App extends Component {
         this.props.setCurrency([{value:"USD"}]);
     }
 
-    // componentWillReceiveProps(nextProps){
-    //     console.log('t',this.props)
-    //     console.log('n',nextProps)
-    //
-    // }
-
 	handleSelectChange (value) {
-		//console.log('You\'ve selected:', value);
+		console.log('You\'ve selected:', value);
 		this.setState({ value });
         this.props.setCurrency(value);
+        value.forEach(selected => {
+            this.props.getNbuData(selected.value, this.props.date, this.props.data);
+        })
 
 	}
+    handleButtonClick(){
+        console.log("state", this.state);
 
-
-
-
+        this.setState({
+            date : this.props.date,
+            selected : this.props.selected
+        });
+    }
 
   render() {
-      this.props.currency.sort(function (a, b) {
-          if (a.label > b.label) {
-              return 1;
-          }
-          if (a.label < b.label) {
-              return -1;
-          }
-          // a должно быть равным b
-          return 0;
-      });
+
     //console.log("this.currency", this.state)
     return (
       <div className="App">
         <Navbar>
           <Navbar.Header>
             <Navbar.Brand>
-              <a href="#">NBU APP</a>
+              <a href="#">Exchange rate from the National Bank of Ukraine</a>
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
@@ -87,16 +86,13 @@ class App extends Component {
 
                   <PickDate />
 
-                </Col>
-                <Col>
-
-
-
+                  <Button bsStyle="primary" onClick={this.handleButtonClick}>Render</Button>
 
                 </Col>
+
               </Row>
 
-            <Chart/>
+            <Chart date={this.state.date} selected={this.state.selected}/>
 
             </Col>
           </Row>
@@ -125,6 +121,12 @@ const mapDispatchToProps = (dispatch) => {
         },
         setCurrency: (code) => {
             dispatch(setCurrency(code));
+        },
+        getNbuData: (code, date, data) =>{
+            dispatch(getNbuData(code, date, data));
+        },
+        fillNbuData: (data, date) =>{
+            dispatch(fillNbuData(data, date));
         }
     };
 };

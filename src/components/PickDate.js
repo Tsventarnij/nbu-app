@@ -4,8 +4,10 @@ import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import { Button } from 'react-bootstrap';
 import {setDate} from "../actions/dateAction";
+import {fillNbuData} from "../actions/dataAction";
 import styled from 'styled-components'
 import 'react-datepicker/dist/react-datepicker.css';
+import {getNbuData} from '../actions/dataAction'
 
 class PickDate extends Component {
     constructor (props) {
@@ -16,11 +18,43 @@ class PickDate extends Component {
         };
         this.handleChangeStart = this.handleChangeStart.bind(this);
         this.handleChangeEnd = this.handleChangeEnd.bind(this);
-        this.handleButtonClick = this.handleButtonClick.bind(this);
+
+    }
+    componentWillUpdate(nextProps){
+        // this.updateData(this.props.date);
+    }
+
+    componentDidUpdate(nextProps){
+        // this.props.fillNbuData(this.props.data, this.props.date);
+    }
+// дубл из Chart
+    getArrayDate(objDate){
+        const startDate=objDate.startDate;
+        const endDate= objDate.endDate;
+        let contDate=[startDate.format("DD.MM.YYYY")];
+        if(endDate.diff(startDate, "years")<2) {
+            while (startDate.format("DD.MM.YYYY") !== endDate.format("DD.MM.YYYY")) {
+                contDate.push(startDate.add(1, 'day').format("DD.MM.YYYY"))
+            }
+        }else{
+            alert("Too long a gap between dates");
+        }
+        return contDate;
+    }
+
+    updateData(arrDate){
+
+        this.props.selected.forEach(selected => {
+            console.log("updateData",selected.label, this.props.date, this.props.data)
+            this.props.getNbuData(selected.label, arrDate, this.props.data);
+        })
     }
 
     handleChangeStart(date) {
+        console.log("handleChangeStart->date",date)
+        // let arrDate=[];
         if(date.format('X')>this.state.endDate.format('X')){
+            console.log("date", date)
             this.setState({
                 startDate: this.state.endDate,
                 endDate: date
@@ -29,7 +63,13 @@ class PickDate extends Component {
                 startDate: this.state.endDate.format("DD.MM.YYYY"),
                 endDate: date.format("DD.MM.YYYY"),
             });
+            // arrDate=this.getArrayDate({
+            //     startDate: this.state.endDate,
+            //     endDate: date
+            // })
+            console.log("state.endDate", this.state.endDate)
         }else {
+            console.log("date", date)
             this.setState({
                 startDate: date
             });
@@ -37,10 +77,18 @@ class PickDate extends Component {
                 startDate: date.format("DD.MM.YYYY"),
                 endDate: this.state.endDate.format("DD.MM.YYYY"),
             });
+            // arrDate=this.getArrayDate({
+            //     startDate: date,
+            //     endDate: this.state.endDate
+            // })
+            console.log("state.endDate", this.state.endDate)
         }
+        console.log("handleChangeStart->updateData",this.props.selected, this.props.date, this.props.data)
+        // this.updateData(arrDate);
     }
 
     handleChangeEnd(date) {
+        let arrDate=[];
         if(date.format('X')<this.state.startDate.format('X')){
             this.setState({
                 startDate: date,
@@ -50,6 +98,10 @@ class PickDate extends Component {
                 startDate: date.format("DD.MM.YYYY"),
                 endDate: this.state.startDate.format("DD.MM.YYYY"),
             });
+            // arrDate=this.getArrayDate({
+            //     startDate: date,
+            //     endDate: this.state.startDate
+            // });
         }else {
             this.setState({
 
@@ -59,65 +111,17 @@ class PickDate extends Component {
                 startDate: this.state.startDate.format("DD.MM.YYYY"),
                 endDate: date.format("DD.MM.YYYY"),
             });
+            // arrDate=this.getArrayDate({
+            //     startDate: this.state.startDate,
+            //     endDate: date,
+            // });
         }
+        // this.updateData(arrDate);
     }
 
-    getArrayDate(format){
-
-        const startDate=moment(this.props.date.startDate, "DD.MM.YYYY");
-        const endDate= moment(this.props.date.endDate, "DD.MM.YYYY");
-        let contDate=[startDate.format(format)];
-        if(endDate.diff(startDate, "years")<2) {
-            while (startDate.format("DD.MM.YYYY") !== endDate.format("DD.MM.YYYY")) {
-                contDate.push(startDate.add(1, 'day').format(format))
-            }
-        }else{
-            alert("Too long a gap between dates");
-        }
-        return contDate;
-    }
-
-    handleButtonClick(){
-        console.log('APP')
-        const arrDate = this.getArrayDate("DD.MM.YYYY");
-        console.log("1props", this.props, "state", this.state)
-        //массив данных по курсу
-        let propsData =this.props.data
-        let isData=false;
-        let oldData=0;
-
-        this.props.selected.forEach((currenc,index)=>{
-            isData=false;
-            this.props.selected[index].data=[];
-            arrDate.forEach(date => {
-
-                propsData.some(item => {
-                    if (date === item.exchangedate&&currenc.label===item.cc) {
-                        this.props.selected[index].data.push(item.rate)
-                        // cursData.push(item.rate)
-                        oldData=item.rate;
-                        isData=true;
-                        return true;
-                    }
-                    return false;
-                })
-                if(!isData){
-                    // cursData.push(oldData)
-                    this.props.selected[index].data.push(oldData)
-                }
-            })
-        })
-
-        console.log("2props", this.props, "state", this.state)
-            // this.setState();
-        // this.forceUpdate();
-    }
     render() {
       return (
         <div>
-          {/*<Table responsive>*/}
-            {/*<tbody>*/}
-              {/*<tr><td>*/}
               <span>
               <StyledBlock>
                 <label>Start date</label>
@@ -136,7 +140,6 @@ class PickDate extends Component {
               </span>
             <span>
             <StyledBlock>
-                {/*</td><td>*/}
             <label>End date</label>
             </StyledBlock>
             <StyledBlock>
@@ -150,14 +153,7 @@ class PickDate extends Component {
                     endDate = {this.state.endDate}
                     onChange = {this.handleChangeEnd}/>
             </StyledBlock>
-              <StyledBlock>
-                <Button bsStyle="primary" onClick={this.handleButtonClick}>Render</Button>
-              </StyledBlock>
             </span>
-                {/*</td>*/}
-              {/*</tr>*/}
-            {/*</tbody>*/}
-          {/*</Table>*/}
         </div>
       )
     }
@@ -177,7 +173,14 @@ const mapDispatchToProps = (dispatch) => {
     return {
         setDate: (object) => {
             dispatch(setDate(object));
+        },
+        fillNbuData: (object, date) => {
+            dispatch(fillNbuData(object, date))
+        },
+        getNbuData: (data, date) =>{
+            dispatch(getNbuData(data, date));
         }
+
     };
 };
 
@@ -186,6 +189,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(PickDate)
 const StyledBlock = styled.div`
    float: left;
    margin: 10px;
-   
+   .react-datepicker{
+        font-size: 10px;
+        font-family: sans-serif;
+    }
    
 `;
