@@ -1,10 +1,13 @@
 import axios from "axios";
 import moment from "moment";
 
-export function nbuData(object, indexCode, indexDate) {
+export function nbuData(indexCode, indexDate) {
     return { type: 'GET_NBU_DATA', object, indexCode, indexDate}
 }
 
+export function nbuDataError(object, indexCode, indexDate) {
+    return { type: 'GET_NBU_DATA_ERROR', indexCode, indexDate}
+}
 
 export function getNbuData(code, date, indexCode, indexDate, recursive = false, attempt = 0) {
     let _this = this;
@@ -27,6 +30,8 @@ export function getNbuData(code, date, indexCode, indexDate, recursive = false, 
             .catch(function (error) {
                 if (attempt <= 5) {
                     dispatch(getNbuData(code, date, indexCode, indexDate, true, attempt));
+                }else{
+                    dispatch(nbuDataError(indexCode, indexDate));
                 }
                 // dispatch(getNbuData(code, date, indexCode, indexDate, true));
                 console.log("getNbuData", code, date, indexCode, indexDate);

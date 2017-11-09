@@ -29,6 +29,14 @@ function getArrayDate(format, date){
 
 export default function selectCurrencReducer(state = defaultInit, action) {
     switch (action.type) {
+        case "GET_NBU_DATA_ERROR":
+            const data = state.data;
+            const count = state.isLoading -1;
+            data[action.indexCode].data[action.indexDate]=data[action.indexCode].data[action.indexDate-1];
+            return {
+                isLoading : count,
+                data: data}
+
         case "GET_NBU_DATA":
             // console.log("state",state, "action", action)
             const data = state.data;
