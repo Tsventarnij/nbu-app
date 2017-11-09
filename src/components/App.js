@@ -7,47 +7,76 @@ import Select from 'react-select';
 import { Navbar, Grid, Row, Col, Button } from 'react-bootstrap';
 import 'react-select/dist/react-select.css';
 import moment from 'moment';
-import {getNbuData, fillNbuData} from '../actions/dataAction'
+import {getNbuData, fillNbuData, startLoadingData} from '../actions/dataAction'
+// import spinner from '../../public/spinner.gif'
 
 class App extends Component {
 
     constructor (props) {
         super(props)
         this.state = {
-            value: ["USD"],
+            value: [],
             date: [],
             selected: []
         };
+        // console.log(this.props.selected)
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleButtonClick = this.handleButtonClick.bind(this);
+    }
 
+    /**
+     *
+     *
+     */
+    shouldComponentUpdate(nextProps, nextState){
+        console.log("shouldComponentUpdate ->")
+        console.log("nextProps", nextProps,"Props", this.props)
+        console.log("nextState",nextState, "State",this.state)
+
+        if ((this.props.selected.isLoading === 0) && nextProps.selected.isLoading) return true;
+
+        if (this.props.selected.isLoading === 1 && nextProps.selected.isLoading===0){
+            this.setState({
+                date : this.props.date,
+                selected : nextProps.selected.data
+            });
+        }
+
+        if (nextProps.selected.isLoading) return false;
+
+        return true;
     }
-    componentWillUpdate(nextProps){
-        this.props.fillNbuData(this.props.data, this.props.date);
-    }
+    // componentWillUpdate(nextProps){
+    //     this.props.fillNbuData(this.props.data, this.props.date);
+    // }
 
     componentDidMount() {
-        console.log("APP-componentDidMount")
+        // console.log("APP-componentDidMount")
         this.props.getCurrency();
-        this.props.setCurrency([{value:"USD"}]);
+        //this.props.setCurrency([{value:"USD"}]);
     }
 
 	handleSelectChange (value) {
-		console.log('You\'ve selected:', value);
-		this.setState({ value });
-        this.props.setCurrency(value);
-        value.forEach(selected => {
-            this.props.getNbuData(selected.value, this.props.date, this.props.data);
-        })
+		// console.log('You\'ve selected:', value);
+        if(!this.props.selected.isLoading) {
+            this.setState({value});
+            this.props.setCurrency(value);
+        }
+        // value.forEach(selected => {
+        //     this.props.getNbuData(selected.value, this.props.date, this.props.data);
+        // })
 
 	}
     handleButtonClick(){
-        console.log("state", this.state);
+        // console.log("state", this.state);
+        this.props.startLoadingData(this.props.selected.data.length*this.props.date.length);
 
-        this.setState({
-            date : this.props.date,
-            selected : this.props.selected
-        });
+        this.props.selected.data.forEach((selected, indexCode) => {
+            this.props.date.forEach((date, indexDate) => {
+                this.props.getNbuData(selected.label, date, indexCode, indexDate);
+            })
+        })
+
     }
 
   render() {
@@ -86,13 +115,14 @@ class App extends Component {
 
                   <PickDate />
 
-                  <Button bsStyle="primary" onClick={this.handleButtonClick}>Render</Button>
+                  <Button bsStyle="primary" onClick={this.handleButtonClick}>{this.props.selected.isLoading ? 'Loading...' : 'Render'}</Button>
 
                 </Col>
 
               </Row>
-
-            <Chart date={this.state.date} selected={this.state.selected}/>
+                {/*<img src='spinner.gif' />*/}
+                {/*{this.props.selected.isLoading ? <img src='spinner.gif' /> : ''}*/}
+            <Chart date={this.state.date} selected={this.state.selected} loading={this.props.selected.isLoading}/>
 
             </Col>
           </Row>
@@ -102,6 +132,9 @@ class App extends Component {
     );
   }
 }
+
+/* width: 50%; */
+
 
 function mapStateToProps(state) {
 //console.log("State - ", state)
@@ -122,11 +155,14 @@ const mapDispatchToProps = (dispatch) => {
         setCurrency: (code) => {
             dispatch(setCurrency(code));
         },
-        getNbuData: (code, date, data) =>{
-            dispatch(getNbuData(code, date, data));
+        getNbuData: (code, date, indexCode, indexDate) =>{
+            dispatch(getNbuData(code, date, indexCode, indexDate));
         },
         fillNbuData: (data, date) =>{
             dispatch(fillNbuData(data, date));
+        },
+        startLoadingData: (count) =>{
+            dispatch(startLoadingData(count));
         }
     };
 };

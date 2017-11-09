@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {Line} from 'react-chartjs-2';
 import moment from 'moment';
 import {getNbuData} from '../actions/dataAction'
+import styled from 'styled-components'
 
 class Chart extends Component {
 
@@ -90,12 +91,18 @@ class Chart extends Component {
         // console.log("Chart")
         // console.log("1props", this.props, "state", this.state)
         return (
-            <div>
+            <Wrapper>
+                {this.props.loading ? <Loader src='spinner.gif' /> : ''}
                 <Line  data={data} />
-            </div>
+            </Wrapper>
         )
     }
 }
+// height: 100%;
+// left: 50%;
+// top: 50%;
+// transform: translateX(-50%) translateY(-50%);
+// position: absolute;
 
 // function mapStateToProps(state) {
 //     return {
@@ -116,3 +123,16 @@ class Chart extends Component {
 //
 // export default connect(mapStateToProps, mapDispatchToProps)(Chart)
 export default Chart
+
+const Wrapper = styled.div`
+    position: relative;
+`;
+
+
+const Loader = styled.img`
+    height: 100%;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    position: absolute;
+`;

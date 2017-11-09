@@ -45,76 +45,81 @@ class PickDate extends Component {
     updateData(arrDate){
 
         this.props.selected.forEach(selected => {
-            console.log("updateData",selected.label, this.props.date, this.props.data)
+            // console.log("updateData",selected.label, this.props.date, this.props.data)
             this.props.getNbuData(selected.label, arrDate, this.props.data);
         })
     }
 
     handleChangeStart(date) {
-        console.log("handleChangeStart->date",date)
-        // let arrDate=[];
-        if(date.format('X')>this.state.endDate.format('X')){
-            console.log("date", date)
-            this.setState({
-                startDate: this.state.endDate,
-                endDate: date
-            });
-            this.props.setDate({
-                startDate: this.state.endDate.format("DD.MM.YYYY"),
-                endDate: date.format("DD.MM.YYYY"),
-            });
-            // arrDate=this.getArrayDate({
-            //     startDate: this.state.endDate,
-            //     endDate: date
-            // })
-            console.log("state.endDate", this.state.endDate)
-        }else {
-            console.log("date", date)
-            this.setState({
-                startDate: date
-            });
-            this.props.setDate({
-                startDate: date.format("DD.MM.YYYY"),
-                endDate: this.state.endDate.format("DD.MM.YYYY"),
-            });
-            // arrDate=this.getArrayDate({
-            //     startDate: date,
-            //     endDate: this.state.endDate
-            // })
-            console.log("state.endDate", this.state.endDate)
+        // console.log("handleChangeStart->date",date)
+        if(!this.props.selected.isLoading) {
+            // let arrDate=[];
+            if (date.format('X') > this.state.endDate.format('X')) {
+                // console.log("date", date)
+                this.setState({
+                    startDate: this.state.endDate,
+                    endDate: date
+                });
+                this.props.setDate({
+                    startDate: this.state.endDate.format("DD.MM.YYYY"),
+                    endDate: date.format("DD.MM.YYYY"),
+                });
+                // arrDate=this.getArrayDate({
+                //     startDate: this.state.endDate,
+                //     endDate: date
+                // })
+                // console.log("state.endDate", this.state.endDate)
+            } else {
+                // console.log("date", date)
+                this.setState({
+                    startDate: date
+                });
+                this.props.setDate({
+                    startDate: date.format("DD.MM.YYYY"),
+                    endDate: this.state.endDate.format("DD.MM.YYYY"),
+                });
+                // arrDate=this.getArrayDate({
+                //     startDate: date,
+                //     endDate: this.state.endDate
+                // })
+                // console.log("state.endDate", this.state.endDate)
+            }
         }
-        console.log("handleChangeStart->updateData",this.props.selected, this.props.date, this.props.data)
+        // console.log("handleChangeStart->updateData",this.props.selected, this.props.date, this.props.data)
         // this.updateData(arrDate);
     }
 
     handleChangeEnd(date) {
         let arrDate=[];
-        if(date.format('X')<this.state.startDate.format('X')){
-            this.setState({
-                startDate: date,
-                endDate: this.state.startDate
-            });
-            this.props.setDate({
-                startDate: date.format("DD.MM.YYYY"),
-                endDate: this.state.startDate.format("DD.MM.YYYY"),
-            });
-            // arrDate=this.getArrayDate({
-            //     startDate: date,
-            //     endDate: this.state.startDate
-            // });
-        }else {
-            this.setState({
+        if(!this.props.selected.isLoading) {
+            if (date.format('X') < this.state.startDate.format('X')) {
+                this.setState({
+                    startDate: date,
+                    endDate: this.state.startDate
+                });
+                this.props.setDate({
+                    startDate: date.format("DD.MM.YYYY"),
+                    endDate: this.state.startDate.format("DD.MM.YYYY"),
+                });
+                // arrDate=this.getArrayDate({
+                //     startDate: date,
+                //     endDate: this.state.startDate
+                // });
+            } else {
+                this.setState({
 
-                endDate: date
-            });
-            this.props.setDate({
-                startDate: this.state.startDate.format("DD.MM.YYYY"),
-                endDate: date.format("DD.MM.YYYY"),
-            });
-            // arrDate=this.getArrayDate({
-            //     startDate: this.state.startDate,
-            //     endDate: date,
-            // });
+                    endDate: date
+                });
+                this.props.setDate({
+                    startDate: this.state.startDate.format("DD.MM.YYYY"),
+                    endDate: date.format("DD.MM.YYYY"),
+                });
+
+                // arrDate=this.getArrayDate({
+                //     startDate: this.state.startDate,
+                //     endDate: date,
+                // });
+            }
         }
         // this.updateData(arrDate);
     }

@@ -5,7 +5,7 @@ export function date(object) {
 }
 
 export function setDate(object) {
-console.log("dateAction object->", object)
+// console.log("dateAction object->", object)
     const startDate=moment(object.startDate, "DD.MM.YYYY");
     const endDate= moment(object.endDate, "DD.MM.YYYY");
     let contDate=[startDate.format("DD.MM.YYYY")];
@@ -17,7 +17,7 @@ console.log("dateAction object->", object)
         console.log("Too long a gap between dates");
     }
 
-    console.log("dispatch date->", contDate)
+    // console.log("dispatch date->", contDate)
     return (dispatch) => {
        // console.log("setDate", object)
 
