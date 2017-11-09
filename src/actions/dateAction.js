@@ -9,7 +9,7 @@ export function setDate(object) {
     const startDate=moment(object.startDate, "DD.MM.YYYY");
     const endDate= moment(object.endDate, "DD.MM.YYYY");
     let contDate=[startDate.format("DD.MM.YYYY")];
-    if(endDate.diff(startDate, "years")<2) {
+    if(endDate.diff(startDate, "years")<3) {
         while (startDate.format("DD.MM.YYYY") !== endDate.format("DD.MM.YYYY")) {
             contDate.push(startDate.add(1, 'day').format("DD.MM.YYYY"))
         }

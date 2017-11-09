@@ -6,10 +6,11 @@ export function nbuData(object, indexCode, indexDate) {
 }
 
 
-export function getNbuData(code, date, indexCode, indexDate, recursive = false) {
+export function getNbuData(code, date, indexCode, indexDate, recursive = false, attempt = 0) {
     let _this = this;
     return (dispatch) => {
         if(recursive) {
+            attempt++;
             console.log('ya vizvan OPYAT!!!!!!!!');
         }
         axios.get('https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange', {
@@ -24,7 +25,10 @@ export function getNbuData(code, date, indexCode, indexDate, recursive = false) 
                 dispatch(nbuData(response.data, indexCode, indexDate));
             })
             .catch(function (error) {
-                dispatch(getNbuData(code, date, indexCode, indexDate, true));
+                if (attempt <= 5) {
+                    dispatch(getNbuData(code, date, indexCode, indexDate, true, attempt));
+                }
+                // dispatch(getNbuData(code, date, indexCode, indexDate, true));
                 console.log("getNbuData", code, date, indexCode, indexDate);
                 // dispatch(nbuData(response.data, indexCode, indexDate));
                 console.log("error", error);

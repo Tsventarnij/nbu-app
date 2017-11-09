@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {Line} from 'react-chartjs-2';
 import moment from 'moment';
 import {getNbuData} from '../actions/dataAction'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 
 class Chart extends Component {
 
@@ -92,7 +92,9 @@ class Chart extends Component {
         // console.log("1props", this.props, "state", this.state)
         return (
             <Wrapper>
-                {this.props.loading ? <Loader src='spinner.gif' /> : ''}
+                {/*<LoaderEnd src='spinner.gif' />*/}
+                {this.props.loading ?  <Loader src='spinner.gif' /> : ''}
+                {this.props.loadEnded ?  <LoaderEnd src='spinner.gif' /> : ''}
                 <Line  data={data} />
             </Wrapper>
         )
@@ -128,11 +130,31 @@ const Wrapper = styled.div`
     position: relative;
 `;
 
-
 const Loader = styled.img`
     height: 100%;
     left: 50%;
     top: 50%;
     transform: translateX(-50%) translateY(-50%);
     position: absolute;
+    display: block;
 `;
+
+const hideLoader = keyframes`
+  0% { 
+    opacity: 100;
+    display: block;
+  }
+  99%{
+    height: 100%;
+  }
+  100% { 
+    height: 0%;
+    opacity: 0;
+    display: none;
+  }
+`;
+
+const LoaderEnd = styled(Loader)`
+  animation: ${hideLoader} 1s 0s forwards;
+`;
+

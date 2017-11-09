@@ -20,35 +20,35 @@ class PickDate extends Component {
         this.handleChangeEnd = this.handleChangeEnd.bind(this);
 
     }
-    componentWillUpdate(nextProps){
-        // this.updateData(this.props.date);
-    }
-
-    componentDidUpdate(nextProps){
-        // this.props.fillNbuData(this.props.data, this.props.date);
-    }
+    // componentWillUpdate(nextProps){
+    //     // this.updateData(this.props.date);
+    // }
+    //
+    // componentDidUpdate(nextProps){
+    //     // this.props.fillNbuData(this.props.data, this.props.date);
+    // }
 // дубл из Chart
-    getArrayDate(objDate){
-        const startDate=objDate.startDate;
-        const endDate= objDate.endDate;
-        let contDate=[startDate.format("DD.MM.YYYY")];
-        if(endDate.diff(startDate, "years")<2) {
-            while (startDate.format("DD.MM.YYYY") !== endDate.format("DD.MM.YYYY")) {
-                contDate.push(startDate.add(1, 'day').format("DD.MM.YYYY"))
-            }
-        }else{
-            alert("Too long a gap between dates");
-        }
-        return contDate;
-    }
-
-    updateData(arrDate){
-
-        this.props.selected.forEach(selected => {
-            // console.log("updateData",selected.label, this.props.date, this.props.data)
-            this.props.getNbuData(selected.label, arrDate, this.props.data);
-        })
-    }
+//     getArrayDate(objDate){
+//         const startDate=objDate.startDate;
+//         const endDate= objDate.endDate;
+//         let contDate=[startDate.format("DD.MM.YYYY")];
+//         if(endDate.diff(startDate, "years")<2) {
+//             while (startDate.format("DD.MM.YYYY") !== endDate.format("DD.MM.YYYY")) {
+//                 contDate.push(startDate.add(1, 'day').format("DD.MM.YYYY"))
+//             }
+//         }else{
+//             alert("Too long a gap between dates");
+//         }
+//         return contDate;
+//     }
+//
+//     updateData(arrDate){
+//
+//         this.props.selected.forEach(selected => {
+//             // console.log("updateData",selected.label, this.props.date, this.props.data)
+//             this.props.getNbuData(selected.label, arrDate, this.props.data);
+//         })
+//     }
 
     handleChangeStart(date) {
         // console.log("handleChangeStart->date",date)
@@ -193,7 +193,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(PickDate)
 
 const StyledBlock = styled.div`
    float: left;
-   margin: 10px;
+   margin: 5px;
    .react-datepicker{
         font-size: 10px;
         font-family: sans-serif;

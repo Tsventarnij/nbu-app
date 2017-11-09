@@ -8,7 +8,7 @@ import { Navbar, Grid, Row, Col, Button } from 'react-bootstrap';
 import 'react-select/dist/react-select.css';
 import moment from 'moment';
 import {getNbuData, fillNbuData, startLoadingData} from '../actions/dataAction'
-// import spinner from '../../public/spinner.gif'
+import styled from 'styled-components'
 
 class App extends Component {
 
@@ -17,7 +17,8 @@ class App extends Component {
         this.state = {
             value: [],
             date: [],
-            selected: []
+            selected: [],
+            loadEnded: false
         };
         // console.log(this.props.selected)
         this.handleSelectChange = this.handleSelectChange.bind(this);
@@ -33,10 +34,16 @@ class App extends Component {
         console.log("nextProps", nextProps,"Props", this.props)
         console.log("nextState",nextState, "State",this.state)
 
-        if ((this.props.selected.isLoading === 0) && nextProps.selected.isLoading) return true;
-
-        if (this.props.selected.isLoading === 1 && nextProps.selected.isLoading===0){
+        if ((this.props.selected.isLoading === 0) && nextProps.selected.isLoading){
             this.setState({
+                loadEnded: false,
+            });
+            return true;
+        }
+
+        if (this.props.selected.isLoading === 1 && nextProps.selected.isLoading === 0){
+            this.setState({
+                loadEnded: true,
                 date : this.props.date,
                 selected : nextProps.selected.data
             });
@@ -102,7 +109,7 @@ class App extends Component {
                     multi
                     closeOnSelect={false}
                     onChange={this.handleSelectChange}
-                    placeholder="Select currenc(s)"
+                    placeholder="Select currency(s)"
                     value={this.state.value}
                     id="state-select"
                     ref="stateSelect"
@@ -112,17 +119,17 @@ class App extends Component {
               </Row>
               <Row>
                 <Col>
-
+                    <ButtonStyle>
                   <PickDate />
 
-                  <Button bsStyle="primary" onClick={this.handleButtonClick}>{this.props.selected.isLoading ? 'Loading...' : 'Render'}</Button>
-
+                     <Button bsStyle="primary" onClick={this.handleButtonClick}>{this.props.selected.isLoading ? 'Loading...' : 'Render'}</Button>
+                  </ButtonStyle>
                 </Col>
 
               </Row>
                 {/*<img src='spinner.gif' />*/}
                 {/*{this.props.selected.isLoading ? <img src='spinner.gif' /> : ''}*/}
-            <Chart date={this.state.date} selected={this.state.selected} loading={this.props.selected.isLoading}/>
+            <Chart date={this.state.date} selected={this.state.selected} loading={this.props.selected.isLoading} loadEnded={this.state.loadEnded}/>
 
             </Col>
           </Row>
@@ -168,3 +175,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)
+
+const ButtonStyle = styled.div`
+    margin:10px
+`
