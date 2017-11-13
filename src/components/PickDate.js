@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux'
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
-import {setDate, getNbuData} from "../actions/dateAction";
+import {setDate} from "../actions/dateAction";
 import {fillNbuData} from "../actions/dataAction";
 import styled from 'styled-components'
 import 'react-datepicker/dist/react-datepicker.css';
+import {getNbuData} from "../actions/dataAction";
 
 class PickDate extends Component {
     constructor (props) {
