@@ -1,11 +1,11 @@
 import axios from "axios";
 import moment from "moment";
 
-export function nbuData(indexCode, indexDate) {
+export function nbuData(object, indexCode, indexDate) {
     return { type: 'GET_NBU_DATA', object, indexCode, indexDate}
 }
 
-export function nbuDataError(object, indexCode, indexDate) {
+export function nbuDataError( indexCode, indexDate) {
     return { type: 'GET_NBU_DATA_ERROR', indexCode, indexDate}
 }
 
@@ -14,7 +14,7 @@ export function getNbuData(code, date, indexCode, indexDate, recursive = false, 
     return (dispatch) => {
         if(recursive) {
             attempt++;
-            console.log('ya vizvan OPYAT!!!!!!!!');
+            // console.log('ya vizvan OPYAT!!!!!!!!');
         }
         axios.get('https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange', {
             params: {

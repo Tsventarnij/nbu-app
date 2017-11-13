@@ -28,10 +28,13 @@ function getArrayDate(format, date){
 
 
 export default function selectCurrencReducer(state = defaultInit, action) {
+    let data = [];
+    let count = 0;
+    console.log("selectCurrencReducer state->", state, "action", action)
     switch (action.type) {
         case "GET_NBU_DATA_ERROR":
-            const data = state.data;
-            const count = state.isLoading -1;
+            data = state.data;
+            count = state.isLoading -1;
             data[action.indexCode].data[action.indexDate]=data[action.indexCode].data[action.indexDate-1];
             return {
                 isLoading : count,
@@ -39,8 +42,8 @@ export default function selectCurrencReducer(state = defaultInit, action) {
 
         case "GET_NBU_DATA":
             // console.log("state",state, "action", action)
-            const data = state.data;
-            const count = state.isLoading -1;
+            data = state.data;
+            count = state.isLoading -1;
             data[action.indexCode].data[action.indexDate]=action.object[0].rate;
             console.log("GET_NBU_DATA ->data [",action.indexCode, "][",action.indexDate,"]=",action.object[0].rate)
             return {
